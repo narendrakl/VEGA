@@ -1,19 +1,13 @@
-# merge_header_footer_safe.py
+# merge_header_footer.py
 from openpyxl import load_workbook, Workbook
 from openpyxl.utils import get_column_letter
 from copy import copy
 from pathlib import Path
 from datetime import datetime
 
-# --- File paths ---
-base_dir = Path(__file__).parent.parent
-header_file = base_dir / "config" /"header_template.xlsx"
-body_file   = base_dir / "output" /"body_PnL.xlsx"
-footer_file = base_dir / "config" /"footer_template.xlsx"
-final_file  = base_dir / "output" /"final_PnL.xlsx"
-header_with_month = base_dir / "output" /"header_with_month.xlsx"
-
 def copy_sheet_to(ws_src, ws_dest, dest_start_row):
+    # --- File paths ---
+
     """
     Copy all cells, styles, column widths and merged ranges from ws_src into ws_dest
     starting at row dest_start_row (1-based).
@@ -76,6 +70,8 @@ def copy_sheet_to(ws_src, ws_dest, dest_start_row):
     return max_row  # number of rows copied
 
 def copy_all_parts(header_path, body_path, footer_path, output_path):
+    base_dir = Path(__file__).parent.parent
+    header_with_month = base_dir / "output" /"header_with_month.xlsx"
     wb_header = load_workbook(header_path)
     ws_header = wb_header.active
     # ==========================================================
@@ -122,7 +118,7 @@ def copy_all_parts(header_path, body_path, footer_path, output_path):
 
     # save final workbook
     wb_final.save(output_path)
-    print(f"✅ Final merged file written to: {output_path}")
+    print(f"Final file written to: {output_path}")
 
 if __name__ == "__main__":
     copy_all_parts(header_file, body_file, footer_file, final_file)
