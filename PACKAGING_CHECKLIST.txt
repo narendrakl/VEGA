@@ -1,0 +1,67 @@
+============================================================
+VEGA - Offline Deployment Packaging Checklist
+============================================================
+
+Use this checklist when preparing the VEGA package for offline deployment.
+
+PREPARATION (On machine with internet):
+============================================================
+[ ] Python 3.8+ installed on development machine
+[ ] All project files are up to date
+[ ] Run download_dependencies.bat successfully
+[ ] Verify 'wheels' folder exists and contains .whl files
+[ ] Test the application works on development machine
+
+FILES TO INCLUDE IN ZIP:
+============================================================
+[ ] config/ folder (all template .xlsx files)
+[ ] scripts/ folder (all .py files)
+[ ] exports/ folder (can be empty)
+[ ] output/ folder (can be empty, or include .gitkeep)
+[ ] wheels/ folder (CRITICAL - contains all dependencies)
+[ ] requirements.txt
+[ ] setup.bat
+[ ] run.bat
+[ ] download_dependencies.bat (optional, for future updates)
+[ ] README.md
+[ ] DEPLOYMENT_GUIDE.md
+[ ] PACKAGING_CHECKLIST.txt (this file)
+
+FILES TO EXCLUDE FROM ZIP:
+============================================================
+[ ] __pycache__/ folders
+[ ] .git/ folder
+[ ] .gitignore
+[ ] *.pyc files
+[ ] Any temporary files
+[ ] Any test files
+
+VERIFICATION BEFORE SHIPPING:
+============================================================
+[ ] ZIP file size is reasonable (should be 50-200 MB depending on wheels)
+[ ] Extract ZIP on a test machine and verify all files present
+[ ] Verify wheels folder is not empty
+[ ] Create a test setup on a clean Windows machine (if possible)
+
+TARGET MACHINE REQUIREMENTS:
+============================================================
+[ ] Windows 7 or higher
+[ ] Python 3.8+ installer (separate download if needed)
+[ ] Tally software (for automated features)
+
+QUICK TEST AFTER DEPLOYMENT:
+============================================================
+[ ] Extract ZIP on target machine
+[ ] Install Python (if not present)
+[ ] Run setup.bat
+[ ] Verify no errors during setup
+[ ] Run: python -c "import openpyxl; import pandas; import requests; print('OK')"
+[ ] Test run.bat or python scripts\automate.py
+
+============================================================
+NOTES:
+- The wheels folder is the most important part for offline installation
+- If wheels folder is missing, setup will fail
+- Python installer must be obtained separately (can be downloaded on another machine)
+- Total package size: ~50-200 MB (depending on Python version and dependencies)
+============================================================

@@ -26,3 +26,7 @@ output/*.xlsx
 .DS_Store
 Thumbs.db
 
+# Offline deployment packages (large files)
+wheels/
+*.whl
+

@@ -258,6 +258,19 @@ Required columns:
 
 Narendra KL
 
+## 📦 Offline Deployment
+
+VEGA can be deployed on Windows machines without internet connectivity. See [DEPLOYMENT_GUIDE.md](DEPLOYMENT_GUIDE.md) for complete instructions.
+
+**Quick Setup for Offline Installation:**
+
+1. **On a machine with internet:** Run `download_dependencies.bat` to prepare offline packages
+2. **Package everything:** Create a ZIP of the entire VEGA folder (including `wheels` folder)
+3. **On target machine:** Extract ZIP, install Python (if needed), then run `setup.bat`
+4. **Run application:** Use `run.bat` or `python scripts\automate.py`
+
+For detailed step-by-step instructions, see [DEPLOYMENT_GUIDE.md](DEPLOYMENT_GUIDE.md).
+
 ## 📄 License
 
 This project is for internal use and automation of Tally P&L reporting with Kannada translation support.

@@ -1,0 +1,44 @@
+============================================================
+VEGA - Quick Start Guide (Offline Installation)
+============================================================
+
+STEP 1: INSTALL PYTHON (If not already installed)
+============================================================
+1. Download Python 3.8 or higher from python.org
+   (Can be done on another machine with internet)
+2. Copy Python installer to this machine
+3. Run installer and CHECK "Add Python to PATH"
+4. Verify: Open Command Prompt, type: python --version
+
+STEP 2: SETUP VEGA
+============================================================
+1. Extract the VEGA ZIP file to a folder (e.g., C:\VEGA)
+2. Double-click setup.bat
+3. Wait for installation to complete (2-5 minutes)
+4. You should see "Setup completed successfully!"
+
+STEP 3: RUN VEGA
+============================================================
+Simply double-click run.bat
+
+OR
+
+Open Command Prompt in VEGA folder and type:
+   python scripts\automate.py
+
+============================================================
+TROUBLESHOOTING:
+============================================================
+
+Problem: "Python is not recognized"
+Solution: Install Python and check "Add Python to PATH"
+
+Problem: "wheels directory not found"
+Solution: The package is incomplete. Get a complete package.
+
+Problem: Setup fails
+Solution: Make sure Python is installed correctly and in PATH
+
+For detailed help, see DEPLOYMENT_GUIDE.md
+
+============================================================
