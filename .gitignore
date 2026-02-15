@@ -15,7 +15,7 @@ __pycache__/
 # Output files (generated)
 output/*.xlsx
 !output/.gitkeep
-
+exports/*.xml
 # IDE
 .vscode/
 .idea/

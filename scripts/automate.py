@@ -88,13 +88,17 @@ def translate_and_filter(data, mapping_dict):
 # ==========================================================
 # 3️⃣ Month-year in Kannada
 # ==========================================================
-def get_month_year_kn():
+def get_month_year_kn(date=None):
+    """
+    Return month and year in Kannada (e.g. "ಮಾರ್ಚ್ 2024").
+    date: datetime or date instance; if None, uses datetime.now().
+    """
     MONTHS_KN = {
         1: "ಜನವರಿ", 2: "ಫೆಬ್ರವರಿ", 3: "ಮಾರ್ಚ್", 4: "ಏಪ್ರಿಲ್", 5: "ಮೇ", 6: "ಜೂನ್",
         7: "ಜುಲೈ", 8: "ಆಗಸ್ಟ್", 9: "ಸೆಪ್ಟೆಂಬರ್", 10: "ಅಕ್ಟೋಬರ್", 11: "ನವೆಂಬರ್", 12: "ಡಿಸೆಂಬರ್"
     }
-    now = datetime.now()
-    return f"{MONTHS_KN[now.month]} {now.year}"
+    dt = date if date is not None else datetime.now()
+    return f"{MONTHS_KN[dt.month]} {dt.year}"
 
 
 # ==========================================================
@@ -165,11 +169,13 @@ def generate_kannada_pnl(income, expense, month_year_kn):
 # 6️⃣ Main execution flow
 # ==========================================================
 def main():
+    report_date = None  # month/year for report; set from export "To" date
     print("Step 1: Export Profit & Loss XML from Tally")
     export_result = export_pandl_from_tally()
     if export_result is None:
         print("Skipping next steps (no XML exported).")
         return
+    _, report_date = export_result
 
     print("\nStep 2: Sync ledgers before generating report")
     mapping_df = sync_ledgers_from_tally()
@@ -184,14 +190,14 @@ def main():
     expense = translate_and_filter(expense, mapping_dict)
 
     print("\nStep 4: Generate Kannada Profit & Loss Excel body")
-    month_year_kn = get_month_year_kn()
+    month_year_kn = get_month_year_kn(report_date)
     generate_kannada_pnl(income, expense, month_year_kn)
 
     header_file = base_dir / "config" / "header_template.xlsx"
     body_file = base_dir / "output" / "body_PnL.xlsx"
     footer_file = base_dir / "config" / "footer_template.xlsx"
     final_file = base_dir / "output" / "final_PnL.xlsx"
-    copy_all_parts(header_file, body_file, footer_file, final_file)
+    copy_all_parts(header_file, body_file, footer_file, final_file, month_year_kn=month_year_kn)
 
     print("\n All steps completed successfully!")
 

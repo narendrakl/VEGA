@@ -35,3 +35,4 @@ echo Process completed!
 echo ============================================================
 echo.
 pause
+cd ..

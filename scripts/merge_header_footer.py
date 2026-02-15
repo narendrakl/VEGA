@@ -69,20 +69,21 @@ def copy_sheet_to(ws_src, ws_dest, dest_start_row):
 
     return max_row  # number of rows copied
 
-def copy_all_parts(header_path, body_path, footer_path, output_path):
+def copy_all_parts(header_path, body_path, footer_path, output_path, month_year_kn=None):
     base_dir = Path(__file__).parent.parent
     header_with_month = base_dir / "output" /"header_with_month.xlsx"
     wb_header = load_workbook(header_path)
     ws_header = wb_header.active
     # ==========================================================
-    # 3️⃣ Month-year in Kannada
+    # 3️⃣ Month-year in Kannada (use provided or current date)
     # ==========================================================
-    MONTHS_KN = {
-        1:"ಜನವರಿ",2:"ಫೆಬ್ರವರಿ",3:"ಮಾರ್ಚ್",4:"ಏಪ್ರಿಲ್",5:"ಮೇ",6:"ಜೂನ್",
-        7:"ಜುಲೈ",8:"ಆಗಸ್ಟ್",9:"ಸೆಪ್ಟೆಂಬರ್",10:"ಅಕ್ಟೋಬರ್",11:"ನವೆಂಬರ್",12:"ಡಿಸೆಂಬರ್"
-    }
-    now = datetime.now()
-    month_year_kn = f"{MONTHS_KN[now.month]} {now.year}"
+    if month_year_kn is None:
+        MONTHS_KN = {
+            1:"ಜನವರಿ",2:"ಫೆಬ್ರವರಿ",3:"ಮಾರ್ಚ್",4:"ಏಪ್ರಿಲ್",5:"ಮೇ",6:"ಜೂನ್",
+            7:"ಜುಲೈ",8:"ಆಗಸ್ಟ್",9:"ಸೆಪ್ಟೆಂಬರ್",10:"ಅಕ್ಟೋಬರ್",11:"ನವೆಂಬರ್",12:"ಡಿಸೆಂಬರ್"
+        }
+        now = datetime.now()
+        month_year_kn = f"{MONTHS_KN[now.month]} {now.year}"
     for row in ws_header.iter_rows():
         for cell in row:
             if cell.value and "$$monthYear$$" in str(cell.value):

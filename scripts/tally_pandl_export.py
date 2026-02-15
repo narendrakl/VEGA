@@ -95,4 +95,4 @@ def export_pandl_from_tally():
         f.write(response.content)
 
     print(f"Profit & Loss XML saved → {EXPORT_FILE}")
-    return EXPORT_FILE
+    return (EXPORT_FILE, to_date)
