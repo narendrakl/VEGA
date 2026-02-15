@@ -3,7 +3,8 @@ from ledger_sync import sync_ledgers_from_tally
 from merge_header_footer import copy_all_parts
 import xml.etree.ElementTree as ET
 from openpyxl import load_workbook
-from openpyxl.styles import numbers
+from openpyxl.styles import numbers, Alignment
+from openpyxl.utils import get_column_letter
 from copy import copy
 from datetime import datetime
 import pandas as pd
@@ -114,10 +115,25 @@ def copy_style(src, dst):
         dst.alignment = copy(src.alignment)
 
 
+def _alignment_with_wrap(ref_cell):
+    """Alignment from ref_cell with wrap_text=True."""
+    a = ref_cell.alignment if ref_cell.has_style else None
+    if a:
+        return Alignment(
+            horizontal=a.horizontal,
+            vertical=a.vertical,
+            text_rotation=a.text_rotation,
+            wrap_text=True,
+            shrink_to_fit=a.shrink_to_fit,
+            indent=a.indent,
+        )
+    return Alignment(wrap_text=True)
+
+
 def insert_data(ws, data, start_row, col_name, col_amt, ref_name, ref_amt):
     """
     Dynamically insert rows from start_row based on data length.
-    Keeps header/footer intact.
+    Name column: 15-char width, text wrapped. Amount column: 7-char width.
     """
     if not data:
         return
@@ -130,6 +146,7 @@ def insert_data(ws, data, start_row, col_name, col_amt, ref_name, ref_amt):
         c2.value = amt
         copy_style(ref_name, c1)
         copy_style(ref_amt, c2)
+        c1.alignment = _alignment_with_wrap(ref_name)
         c2.number_format = u'₹ #,##0.00'
 
 
@@ -149,6 +166,12 @@ def generate_kannada_pnl(income, expense, month_year_kn):
     start_row = 2
     exp_name_col, exp_amt_col = 2, 3   # B, C
     inc_name_col, inc_amt_col = 5, 6   # E, F
+
+    # Fixed column widths: name columns 15 chars (with wrap), amount columns 7 chars
+    ws.column_dimensions[get_column_letter(exp_name_col)].width = 15
+    ws.column_dimensions[get_column_letter(exp_amt_col)].width = 7
+    ws.column_dimensions[get_column_letter(inc_name_col)].width = 15
+    ws.column_dimensions[get_column_letter(inc_amt_col)].width = 7
 
     # reference styles
     ref_exp_name = ws.cell(start_row, exp_name_col)
