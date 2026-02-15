@@ -130,16 +130,21 @@ def _alignment_with_wrap(ref_cell):
     return Alignment(wrap_text=True)
 
 
-def insert_data(ws, data, start_row, col_name, col_amt, ref_name, ref_amt):
+def insert_data(ws, data, start_row, col_name, col_amt, ref_name, ref_amt, sl_no_col=None, ref_sl=None):
     """
     Dynamically insert rows from start_row based on data length.
     Name column: 15-char width, text wrapped. Amount column: 7-char width.
+    If sl_no_col and ref_sl are set, fills that column with serial numbers 1, 2, 3, ...
     """
     if not data:
         return
 
     for i, (name_kn, amt) in enumerate(data):
         row = start_row + i
+        if sl_no_col is not None and ref_sl is not None:
+            c_sl = ws.cell(row, sl_no_col)
+            c_sl.value = i + 1
+            copy_style(ref_sl, c_sl)
         c1 = ws.cell(row, col_name)
         c1.value = name_kn
         c2 = ws.cell(row, col_amt)
@@ -164,24 +169,29 @@ def generate_kannada_pnl(income, expense, month_year_kn):
                 cell.value = month_year_kn
 
     start_row = 2
-    exp_name_col, exp_amt_col = 2, 3   # B, C
-    inc_name_col, inc_amt_col = 5, 6   # E, F
+    sl_no_exp_col, sl_no_inc_col = 1, 4   # A, D
+    exp_name_col, exp_amt_col = 2, 3      # B, C
+    inc_name_col, inc_amt_col = 5, 6       # E, F
 
-    # Fixed column widths: name columns 15 chars (with wrap), amount columns 7 chars
+    # Fixed column widths: sl no, name columns 15 chars (with wrap), amount columns 7 chars
+    ws.column_dimensions[get_column_letter(sl_no_exp_col)].width = 5
     ws.column_dimensions[get_column_letter(exp_name_col)].width = 15
     ws.column_dimensions[get_column_letter(exp_amt_col)].width = 7
+    ws.column_dimensions[get_column_letter(sl_no_inc_col)].width = 5
     ws.column_dimensions[get_column_letter(inc_name_col)].width = 15
     ws.column_dimensions[get_column_letter(inc_amt_col)].width = 7
 
-    # reference styles
+    # reference styles (use name ref for sl no so font/alignment match)
     ref_exp_name = ws.cell(start_row, exp_name_col)
     ref_exp_amt = ws.cell(start_row, exp_amt_col)
     ref_inc_name = ws.cell(start_row, inc_name_col)
     ref_inc_amt = ws.cell(start_row, inc_amt_col)
 
-    # Insert expense & income
-    insert_data(ws, expense, start_row, exp_name_col, exp_amt_col, ref_exp_name, ref_exp_amt)
-    insert_data(ws, income, start_row, inc_name_col, inc_amt_col, ref_inc_name, ref_inc_amt)
+    # Insert expense (with sl no in col A) & income (with sl no in col D)
+    insert_data(ws, expense, start_row, exp_name_col, exp_amt_col, ref_exp_name, ref_exp_amt,
+                sl_no_col=sl_no_exp_col, ref_sl=ref_exp_name)
+    insert_data(ws, income, start_row, inc_name_col, inc_amt_col, ref_inc_name, ref_inc_amt,
+                sl_no_col=sl_no_inc_col, ref_sl=ref_inc_name)
 
     wb.save(output_file)
     print(f"✅ Kannada Profit & Loss generated successfully → {output_file}")
